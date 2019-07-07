@@ -14,18 +14,15 @@ class EmployeeFactory(
 ) {
     fun buildFromJson(json: String): List<Employee> {
         var list = ArrayList<Employee>()
-        println("[DEBUG] building...")
         try {
             var gson = Gson().fromJson(json, Map::class.java)
-            println("[DEBUG] object built: $gson")
-            gson.forEach { key, value ->
-                println("[DEBUG] key: $key / value: $value")
-                var keyObject = Employee(key as String)
-                var valueObject = Employee(value as String, keyObject)
-                list.add(keyObject)
-                list.add(valueObject)
+            gson.forEach { employee, supervisor ->
+                var supervisorObj = Employee(supervisor as String)
+                var employeeObj = Employee(employee as String, supervisorObj)
+
+                list.add(supervisorObj)
+                list.add(employeeObj)
             }
-            println("[DEBUG] validating $list")
             validator.validate(list)
             return list
         } catch (e: Exception) {

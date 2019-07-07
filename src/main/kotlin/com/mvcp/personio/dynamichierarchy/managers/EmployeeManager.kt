@@ -1,0 +1,85 @@
+package com.mvcp.personio.dynamichierarchy.managers
+
+import com.mvcp.personio.dynamichierarchy.entities.Employee
+import com.mvcp.personio.dynamichierarchy.exceptions.ConflictingParentException
+import com.mvcp.personio.dynamichierarchy.exceptions.CyclicInputException
+import com.mvcp.personio.dynamichierarchy.repositories.EmployeeRepository
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.stereotype.Component
+
+@Component
+class EmployeeManager (
+        @Autowired
+        val employees: EmployeeRepository
+) {
+    fun save(emp : Employee) {
+        var exists = employees.findByName(emp.name)
+        if (exists.size > 0) {
+            println("[DEBUG] Exists ===${exists.get(0)}===. Checking its manager...")
+            if (emp.manager != null) {
+                if (exists.get(0).manager != null && exists.get(0).manager!!.name != emp.manager!!.name) {
+                    throw ConflictingParentException("employee $emp already has a parent (${exists.get(0).manager})")
+                }
+                var result = employees.findByName(emp.manager!!.name)
+                if (result.size == 0) {
+                    employees.save(emp.manager!!)
+                } else {
+                    if (result.get(0).level > emp.level) {
+                        throw CyclicInputException("Your input contain a cycle at (${emp.name} -> ${result.get(0).name})")
+                    }
+                    emp.manager = result.get(0)
+                    emp.level = result.get(0).level + 1
+                }
+                exists.get(0).manager = emp.manager
+                exists.get(0).level = emp.manager!!.level + 1
+                println("[DEBUG] Updating EL: ${exists.get(0)} with MANAGER: ${emp.manager}")
+                employees.save(exists.get(0))
+            } else {
+                println("[DEBUG] Skipping, already exists...")
+            }
+        } else {
+            println("[DEBUG] Not Exists. Checking its manager...")
+            if (emp.manager != null) {
+                println("[DEBUG] It has manager: ${emp.manager}: ${emp.manager!!.name}")
+                var existsManager = employees.findByName(emp.manager!!.name)
+                var el = Employee("")
+                if (existsManager.size < 1) {
+                    println("[DEBUG] Persisting new via parent")
+                    el = employees.save(Employee(emp.manager!!.name))
+                } else {
+                    el = existsManager.get(0)
+                }
+                println("[DEBUG] Merging reference of parent to ${el}")
+                emp.manager = el
+                emp.level = el.level + 1
+            }
+
+            println("[DEBUG] Saving NEW: $emp")
+            employees.save(emp)
+            println("[DEBUG] Persisted ($emp).")
+        }
+    }
+
+    fun getByName(name: String): Employee? {
+        return employees.findByName(name).get(0)
+    }
+
+    fun getById(id: Long): Employee? {
+        return employees.findById(id).get()
+    }
+
+    fun getManagerByName(name: String): Employee? {
+        var obj = employees.findManagerByName(name)
+        if (obj.size > 0) return obj.get(0)
+        return null
+    }
+
+    fun getAll(): MutableList<Employee> {
+        return employees.findAll()
+    }
+
+    fun clean () {
+        employees.deleteAll()
+        employees.flush()
+    }
+}

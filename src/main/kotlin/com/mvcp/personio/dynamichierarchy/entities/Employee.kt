@@ -13,14 +13,17 @@ data class Employee(
 
         @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name="manager_id")
-        var manager: Employee?
-) {
-    constructor(str: String) : this(0, str, null )
+        var manager: Employee?,
 
-    constructor (str: String, manager: Employee) : this(0, str, manager)
+        @Column
+        var level: Int = 0
+) {
+    constructor(str: String) : this(0, str, null , 0)
+
+    constructor (str: String, manager: Employee) : this(0, str, manager, manager.level + 1)
 
     override fun toString() : String {
-        return "EMPLOYEE(${manager?.id},${manager?.name}) <- ($id, $name)"
+        return "EMPLOYEE(${manager?.id},${manager?.name}, ${manager?.level}) <- ($id, $name, $level)"
     }
 
 }
