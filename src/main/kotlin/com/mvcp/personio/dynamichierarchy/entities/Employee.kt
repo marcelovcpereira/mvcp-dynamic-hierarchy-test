@@ -6,22 +6,21 @@ import javax.validation.constraints.NotBlank
 @Entity
 data class Employee(
         @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-        val id: Long = 0,
+        var id: Long = 0,
 
-        val name: String,
+        @Column(unique = true)
+        var name: String,
 
-        @OneToMany
-        val employees: MutableList<Employee> = ArrayList<Employee>()
-
+        @ManyToOne(fetch = FetchType.LAZY)
+        @JoinColumn(name="manager_id")
+        var manager: Employee?
 ) {
-    constructor(str: String) : this(0, str, ArrayList<Employee>())
+    constructor(str: String) : this(0, str, null )
 
-    fun addEmployee(employee: Employee) {
-        employees.add(employee)
-    }
+    constructor (str: String, manager: Employee) : this(0, str, manager)
 
     override fun toString() : String {
-        return "$name : {\n\t\t" + employees.forEach{it.toString()} + "\n}"
+        return "EMPLOYEE(${manager?.id},${manager?.name}) <- ($id, $name)"
     }
 
 }

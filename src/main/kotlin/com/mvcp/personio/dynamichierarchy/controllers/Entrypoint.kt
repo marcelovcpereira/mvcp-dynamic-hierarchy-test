@@ -17,6 +17,7 @@ class Entrypoint (
 
     @PostMapping("/")
     fun putHierarchy(@RequestBody body: String) : String {
+        println("INPUT BODY: $body")
         return app.putHierarchy(body)
     }
 
