@@ -1,9 +1,9 @@
 package com.mvcp.personio.dynamichierarchy.exceptions
 /**
- * Thrown when the Input contains multiple Employees without Supervisors
+ * Thrown when the Input contains references to Non-existant Employee(s)
  *
  * @author      Marcelo Pereira
  * @version     1.0.0
  * @since       2019-06-08
  */
-class MultipleRootsException(message:String): Exception(message)
+class EmployeeNotFoundException(message:String): Exception(message)
