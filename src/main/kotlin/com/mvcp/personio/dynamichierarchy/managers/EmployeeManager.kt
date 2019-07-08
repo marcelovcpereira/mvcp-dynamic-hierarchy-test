@@ -43,7 +43,7 @@ class EmployeeManager (
         } else {
             if (emp.manager != null) {
                 var existsManager = employees.findByName(emp.manager!!.name)
-                var el = Employee("")
+                var el: Employee
                 if (existsManager.size < 1) {
                     el = employees.save(Employee(emp.manager!!.name))
                 } else {

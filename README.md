@@ -40,6 +40,24 @@ Stopping service:
 docker stop mvcp-personio-test
 ```
 
+## Hierarchy Basic Rules
+- Input data should not contain more than 1 reference to a employee's supervisor.
+For example:
+{"marcelo":"andre", "marcelo":"ana"}
+It is considered invalid JSON (ConflictingParentException) 
+>As order of tuples in the input is not important, multiple references could lead to unexpected behavior
+
+- Input data should not contain cycles
+For example:
+{"marcelo":"andre", "andre":"marcelo"}
+It is considered invalid JSON (CyclicInputException)
+
+- Input data should not contain more than 1 root Employee
+For example:
+{"marcelo":"andre", "ana":"peter"}
+It is considered invalid JSON (MultipleRootsException):
+
+
 ## Internal Components
 **Entrypoint:**
 Central controller responsible for intercepting all http requests done to the app.
@@ -58,8 +76,8 @@ Component responsible for managing persistency on Employees
 Component responsible for applying validation strategies on the input
 
 # Improvements:
-- Implement tests
-- Add a validation for checking double-assignments on Input (not allowed)
+- Improve HTTP status code on Exceptions (currently 500)
+- Improve tests
 - Improve authentication mechanism (currently Basic HTTP)
 - Externalize some configuration (admin user/pass could be in properties, port binding could be in properties, etc)
 - Allow multiple hierarchies to be created and persisted 
