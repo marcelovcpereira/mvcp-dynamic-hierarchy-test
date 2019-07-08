@@ -40,7 +40,9 @@ Stopping service:
 docker stop mvcp-personio-test
 ```
 
-## Hierarchy Basic Rules
+## Usage
+
+### Hierarchy Basic Rules:
 - Input data should not contain more than 1 reference to a employee's supervisor.
 For example:
 {"marcelo":"andre", "marcelo":"ana"}
@@ -55,7 +57,45 @@ It is considered invalid JSON (CyclicInputException)
 - Input data should not contain more than 1 root Employee
 For example:
 {"marcelo":"andre", "ana":"peter"}
-It is considered invalid JSON (MultipleRootsException):
+It is considered invalid JSON (MultipleRootsException)
+
+### Authentication
+In the current version, the Dynamic Hierarchy app implements HTTP basic auth with only one user:
+ >user: admin
+ 
+ >password: admin
+
+So, in order to use its API, always send user auth information in the requests as in the examples below
+
+### Examples:
+
+#### Valid Hierarchy
+```bash
+curl -XPOST --user admin:admin http://localhost:8080 -H 'Content-type: application/json' -d '{"claudia":"andre","joao":"andre"}'
+```
+result:
+```bash
+andre{
+ claudia{}
+ joao{}
+}
+```
+
+#### Cyclic Hierarchy
+```bash
+curl -XPOST --user admin:admin http://localhost:8080 -H 'Content-type: application/json' -d '{"claudia":"andre","andre":"claudia"}'
+```
+result:
+```bash
+{
+    "timestamp":"2019-07-08T18:33:03.140+0000",
+    "status":500,
+    "error":"Internal Server Error",
+    "message":"[ERROR] Your input contains a cycle at (claudia)",
+    "path":"/"
+}
+```
+
 
 
 ## Internal Components
