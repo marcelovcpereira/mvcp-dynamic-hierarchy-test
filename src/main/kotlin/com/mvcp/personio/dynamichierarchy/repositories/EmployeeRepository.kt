@@ -14,4 +14,10 @@ interface EmployeeRepository : JpaRepository<Employee, Long> {
 
     @Query("SELECT e FROM Employee e where e.id in (SELECT f.manager from Employee f where f.name = :name)")
     fun findManagerByName(@Param("name") name: String): List<Employee>
+
+    @Query("SELECT e FROM Employee e where e.manager = null")
+    fun findRoot() : Employee
+
+    @Query("SELECT e FROM Employee e where e.manager.id = :id")
+    fun getChildren(@Param("id") id: Long): List<Employee>
 }

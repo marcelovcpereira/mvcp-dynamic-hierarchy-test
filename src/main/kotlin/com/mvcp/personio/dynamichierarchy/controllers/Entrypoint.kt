@@ -1,6 +1,5 @@
 package com.mvcp.personio.dynamichierarchy.controllers
 import com.mvcp.personio.dynamichierarchy.business.DynamicHierarchy
-import com.mvcp.personio.dynamichierarchy.entities.Employee
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
 
@@ -19,10 +18,5 @@ class Entrypoint (
     fun putHierarchy(@RequestBody body: String) : String {
         println("[DEBUG] INPUT BODY: $body")
         return app.putHierarchy(body)
-    }
-
-    @GetMapping("/all")
-    fun listAll() : MutableList<Employee> {
-        return app.list()
     }
 }

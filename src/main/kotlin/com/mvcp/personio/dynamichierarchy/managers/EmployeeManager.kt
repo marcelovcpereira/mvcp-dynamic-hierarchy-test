@@ -2,7 +2,6 @@ package com.mvcp.personio.dynamichierarchy.managers
 
 import com.mvcp.personio.dynamichierarchy.entities.Employee
 import com.mvcp.personio.dynamichierarchy.exceptions.ConflictingParentException
-import com.mvcp.personio.dynamichierarchy.exceptions.CyclicInputException
 import com.mvcp.personio.dynamichierarchy.repositories.EmployeeRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -24,14 +23,9 @@ class EmployeeManager (
                 if (result.size == 0) {
                     employees.save(emp.manager!!)
                 } else {
-                    if (result.get(0).level > emp.level) {
-                        throw CyclicInputException("Your input contain a cycle at (${emp.name} -> ${result.get(0).name})")
-                    }
                     emp.manager = result.get(0)
-                    emp.level = result.get(0).level + 1
                 }
                 exists.get(0).manager = emp.manager
-                exists.get(0).level = emp.manager!!.level + 1
                 println("[DEBUG] Updating EL: ${exists.get(0)} with MANAGER: ${emp.manager}")
                 employees.save(exists.get(0))
             } else {
@@ -51,7 +45,6 @@ class EmployeeManager (
                 }
                 println("[DEBUG] Merging reference of parent to ${el}")
                 emp.manager = el
-                emp.level = el.level + 1
             }
 
             println("[DEBUG] Saving NEW: $emp")
@@ -81,5 +74,13 @@ class EmployeeManager (
     fun clean () {
         employees.deleteAll()
         employees.flush()
+    }
+
+    fun getRoot(): Employee {
+        return employees.findRoot()
+    }
+
+    fun getChildren(id: Long) : List<Employee> {
+        return employees.getChildren(id)
     }
 }

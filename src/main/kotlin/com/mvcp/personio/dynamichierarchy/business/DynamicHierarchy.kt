@@ -4,7 +4,6 @@ import com.mvcp.personio.dynamichierarchy.entities.Employee
 import com.mvcp.personio.dynamichierarchy.exceptions.InvalidInputException
 import com.mvcp.personio.dynamichierarchy.factories.EmployeeFactory
 import com.mvcp.personio.dynamichierarchy.managers.EmployeeManager
-import com.mvcp.personio.dynamichierarchy.repositories.HierarchyRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
@@ -12,9 +11,6 @@ import org.springframework.stereotype.Component
 class DynamicHierarchy(
         @Autowired
         val employees: EmployeeManager,
-
-        @Autowired
-        val hierarchies: HierarchyRepository,
 
         @Autowired
         val empFactory: EmployeeFactory
@@ -42,16 +38,26 @@ class DynamicHierarchy(
                 println("[DEBUG] ##### Saving ##### ($it)")
                 employees.save(it)
             }
-            //TODO create and save hierarchy
+            var root = employees.getRoot()
+            return printHierarchy(root, 0)
         } catch (e: InvalidInputException) {
             return e.toString()
         }
-
-        return "Body was: $body. \nSaved."
     }
 
-    fun list(): MutableList<Employee> {
-        return employees.getAll()
+    private fun printHierarchy(root: Employee, level: Int = 0): String {
+        var spaces = "".padEnd(level)
+        var str = spaces + root.name + "{"
+        var children = employees.getChildren(root.id)
+        if (children.size > 0) {
+            str += "\n"
+            children.forEach { element ->
+                str += printHierarchy(element, level + 1)
+            }
+            str += spaces
+        }
+        str += "}\n"
+        return str
     }
 
     fun clean() {
