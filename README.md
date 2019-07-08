@@ -1,4 +1,6 @@
 # Personio Dynamic Hierarchy Test
+[![Build Status](https://travis-ci.org/marcelovcpereira/mvcp-adobe-reverse-proxy.svg?branch=master)](https://travis-ci.org/marcelovcpereira/mvcp-adobe-reverse-proxy)
+
 Implementation and automation of a Dynamic Hierarchy processor in Kotlin.
 
 ## Download
