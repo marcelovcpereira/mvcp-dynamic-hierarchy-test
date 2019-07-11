@@ -1,11 +1,11 @@
-# Personio Dynamic Hierarchy Test
+# Dynamic Hierarchy Test Kotlin
 [![Build Status](https://travis-ci.org/marcelovcpereira/mvcp-adobe-reverse-proxy.svg?branch=master)](https://travis-ci.org/marcelovcpereira/mvcp-adobe-reverse-proxy)
 
 Implementation and automation of a Dynamic Hierarchy processor in Kotlin.
 
 ## Download
 ```bash
-git clone https://github.com/marcelovcpereira/mvcp-personio-test.git
+git clone https://github.com/marcelovcpereira/mvcp-dynamic-hierarchy-test.git
 ```
 
 ## Building, Testing And Running locally
@@ -24,7 +24,7 @@ A jar file will be generated at /build/libs folder
 
 #### Running Locally
 ```bash
-java -jar mvcp-personio-test-1.0.0-SNAPSHOT.jar
+java -jar mvcp-dynamic-hierarchy-test-1.0.0-SNAPSHOT.jar
 ``` 
 This will run the server locally, listening for HTTP requests coming on port 8080.
 
@@ -35,11 +35,11 @@ Pre requisites:
 
 Starting service:
 ```bash
-docker run --rm --name mvcp-personio-test -p 8080:8080 marcelovcpereira/personio-test:1.0.0 
+docker run --rm --name mvcp-dynamic-hierarchy-test -p 8080:8080 marcelovcpereira/mvcp-dynamic-hierarchy-test:1.0.0 
 ```
 Stopping service:
 ```bash
-docker stop mvcp-personio-test
+docker stop mvcp-dynamic-hierarchy-test
 ```
 
 ## Usage
