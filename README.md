@@ -1,5 +1,5 @@
 # Dynamic Hierarchy Test Kotlin
-[![Build Status](https://travis-ci.org/marcelovcpereira/mvcp-adobe-reverse-proxy.svg?branch=master)](https://travis-ci.org/marcelovcpereira/mvcp-adobe-reverse-proxy)
+[![Build Status](https://travis-ci.org/marcelovcpereira/mvcp-dynamic-hierarchy-test.svg?branch=master)](https://travis-ci.org/marcelovcpereira/mvcp-dynamic-hierarchy-test)
 
 Implementation and automation of a Dynamic Hierarchy processor in Kotlin.
 
